@@ -9,19 +9,28 @@ const DEVICES = {
 export const RedirectToMobileAppStore = ({
   appStoreLink,
   playStoreLink,
-  defaultLink,
+
   autoRedirect,
 }) => {
-  const defaultLinkValue = defaultLink ? defaultLink : playStoreLink;
-  const linkToRedirect = getLinkToRedirectTo(
-    appStoreLink,
-    playStoreLink,
-    defaultLinkValue
-  );
-  if (autoRedirect) window.location.href = linkToRedirect;
+  const linkToRedirect = getLinkToRedirectTo(appStoreLink, playStoreLink);
+
+  if (autoRedirect && linkToRedirect) window.location.href = linkToRedirect;
   return (
     <div>
-      <a href={linkToRedirect}>Download</a>
+      {linkToRedirect ? (
+        <a href={linkToRedirect}>Download</a>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <ul>
+            <li>
+              <a href={appStoreLink}>Download for IOS / Apple Devices </a>
+            </li>
+            <li>
+              <a href={playStoreLink}>Download for Android Devices </a>
+            </li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
@@ -30,7 +39,6 @@ function getLinkToRedirectTo(appStoreLink, playStoreLink, defaultLink) {
   const device = getMobileOperatingSystem();
   if (device === DEVICES.ANDROID) return playStoreLink;
   else if (device === DEVICES.IOS) return appStoreLink;
-  return defaultLink;
 }
 
 function getMobileOperatingSystem() {
